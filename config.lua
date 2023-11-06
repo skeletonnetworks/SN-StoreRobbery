@@ -36,6 +36,14 @@ Config.Notify = function(msg, type)
     --TriggerEvent('ox_lib:notify',{title = msg, type = type})
 end
 
+Config.Dispatch = function(type, coords) -- type options safe or register
+    if type == 'safe' then
+        -- dispatch stuff here
+    elseif type == 'register' then
+        -- dispatch stuff here
+    end
+end
+
 Shops = {
      ---==========[24/7]==========--- NOT GABZ (IF USING GABZ 24/7 line: 83-126)
     {  -- /tp 29.2 -1344.72 29.5

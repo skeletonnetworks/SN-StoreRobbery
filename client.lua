@@ -14,6 +14,7 @@ CreateThread(function()
                 debug = Config.debug,
                 distance = 2.0,
                 action = function()
+                    Config.Dispatch('safe', Shop.safe.xyz)
                     local coordsID = tostring(math.floor(Shop.safe.x+Shop.safe.y+Shop.safe.z))
                     if RobbedSafes[coordsID] then return Config.Notify('Safe was recently robbed.','error') end
                     if exports['SN-Hacking']:MemoryGame(6, 3, 10000) then
@@ -61,6 +62,7 @@ CreateThread(function()
             action = function(entity)
                 if type(entity) == 'table' then entity = entity.entity end
                 local coords = GetEntityCoords(entity)
+                Config.Dispatch('register', coords)
                 local coordsID = tostring(math.floor(coords.x+coords.y+coords.z))
                 if RobbedRegisters[coordsID] then return Config.Notify('Register was recently robbed.','error') end
                 if math.abs(GetEntityHeading(entity)-GetEntityHeading(PlayerPedId())) > 70 then return Config.Notify('You are not behind the counter!','error') end
