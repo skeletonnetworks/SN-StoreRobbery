@@ -1,5 +1,5 @@
 #  SN-StoreRobbery!
-**SN-StoreRobbery:** A free store robbery script with cooldown for both robbing and opening store safes with sounds to notify when the safe is open.  ¯\_(ツ)_/¯ hope yall like
+**SN-StoreRobbery:** A free store robbery script with cooldown for both robbing and opening store safes with sounds to notify when the safe is open. 🤷 hope yall like
 - [Preview](https://medal.tv/games/gta-v/clips/1Ck6PQQJSnlOD7/d1337LKnAkys?invite=cr-MSxlWE0sNjQ0MjkzNjIs)
 - [Support Discord](https://discord.gg/YgmWhMxtPU)
 - [Scripts Shop](https://discord.gg/9EbY4nM5uu)
