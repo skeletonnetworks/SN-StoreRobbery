@@ -1,3 +1,4 @@
+local QBCore = exports['qb-core']:GetCoreObject()
 local RobbedRegisters = {}
 local RobbedSafes = {}
 local OpenedSafe = {}
@@ -17,7 +18,7 @@ CreateThread(function()
                     Config.Dispatch('safe', Shop.safe.xyz)
                     local coordsID = tostring(math.floor(Shop.safe.x+Shop.safe.y+Shop.safe.z))
                     if RobbedSafes[coordsID] then return Config.Notify('Safe was recently robbed.','error') end
-                    if exports['SN-Hacking']:MemoryGame(6, 3, 10000) then
+                    if exports['SN-Hacking']:MemoryGame(2, 3, 10000) then
                         local removeItem = false
                         if Config.safe_loot.remove_item_fail ~= false then
                             if type(Config.safe_loot.remove_item_fail) == 'table' and math.random(Config.safe_loot.remove_item_fail[1], Config.safe_loot.remove_item_fail[2]) == 1 then
@@ -66,25 +67,31 @@ CreateThread(function()
                 local coordsID = tostring(math.floor(coords.x+coords.y+coords.z))
                 if RobbedRegisters[coordsID] then return Config.Notify('Register was recently robbed.','error') end
                 if math.abs(GetEntityHeading(entity)-GetEntityHeading(PlayerPedId())) > 70 then return Config.Notify('You are not behind the counter!','error') end
-                if exports['SN-Hacking']:SkillCheck(40, 5000, {'w','a','s','w'}, 3, 20, 3) then
-                    local removeItem = false
-                    if Config.register_loot.remove_item_fail ~= false then
-                        if type(Config.register_loot.remove_item_fail) == 'table' and math.random(Config.register_loot.remove_item_fail[1], Config.register_loot.remove_item_fail[2]) == 1 then
-                            removeItem = true
-                        elseif type(Config.register_loot.remove_item_fail) == 'bool' then
-                            removeItem = true
+                QBCore.Functions.TriggerCallback('qb-jewellery:server:getCops', function(cops)
+                    if cops >= Config.MinCops then
+                        if exports['SN-Hacking']:SkillCheck(40, 5000, {'w','a','s','w'}, 3, 20, 3) then
+                            local removeItem = false
+                            if Config.register_loot.remove_item_fail ~= false then
+                                if type(Config.register_loot.remove_item_fail) == 'table' and math.random(Config.register_loot.remove_item_fail[1], Config.register_loot.remove_item_fail[2]) == 1 then
+                                    removeItem = true
+                                elseif type(Config.register_loot.remove_item_fail) == 'bool' then
+                                    removeItem = true
+                                end
+                            end
+                            TriggerServerEvent('SN-Shops:Server:Reward', 'register', coordsID, removeItem)
+                        else
+                            if Config.register_loot.remove_item_fail ~= false then
+                                if type(Config.register_loot.remove_item_fail) == 'table' and math.random(Config.register_loot.remove_item_fail[1], Config.register_loot.remove_item_fail[2]) == 1 then
+                                    TriggerServerEvent('SN-Shops:Server:RemoveItem', Config.register_loot.item_needed)
+                                elseif type(Config.register_loot.remove_item_fail) == 'bool' then
+                                    TriggerServerEvent('SN-Shops:Server:RemoveItem', Config.register_loot.item_needed)
+                                end
+                            end
                         end
+                    else
+                        Config.Notify('Not Enough Cops!.', 'error')
                     end
-                    TriggerServerEvent('SN-Shops:Server:Reward', 'register', coordsID, removeItem)
-                else
-                    if Config.register_loot.remove_item_fail ~= false then
-                        if type(Config.register_loot.remove_item_fail) == 'table' and math.random(Config.register_loot.remove_item_fail[1], Config.register_loot.remove_item_fail[2]) == 1 then
-                            TriggerServerEvent('SN-Shops:Server:RemoveItem', Config.register_loot.item_needed)
-                        elseif type(Config.register_loot.remove_item_fail) == 'bool' then
-                            TriggerServerEvent('SN-Shops:Server:RemoveItem', Config.register_loot.item_needed)
-                        end
-                    end
-                end
+                end)
             end,
             canInteract = function(entity)
                 for i, shop in pairs(Shops) do

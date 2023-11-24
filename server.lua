@@ -1,6 +1,8 @@
+local QBCore = exports['qb-core']:GetCoreObject()
 local Data = nil
 local RobbedRegisters = nil
 local RobbedSafes = nil
+local cachedPoliceAmount = {}
 local  TimeSeconds = {
     ['days'] = 86400,
     ['hours'] = 3600,
@@ -8,7 +10,18 @@ local  TimeSeconds = {
     ['seconds'] = 1,
 }
 
-CreateThread(function() 
+QBCore.Functions.CreateCallback('SN-StoreRobbery:server:getCops', function(source, cb)
+    local amount = 0
+    for _, v in pairs(QBCore.Functions.GetQBPlayers()) do
+        if (v.PlayerData.job.name == 'police' or v.PlayerData.job.type == 'leo') and v.PlayerData.job.onduty then
+            amount = amount + 1
+        end
+    end
+    cachedPoliceAmount[source] = amount
+    cb(amount)
+end)
+
+CreateThread(function()
     Data = json.decode(LoadResourceFile('SN-StoreRobbery', 'Save.json')) or {}
     local currentTime = os.time()
     local TimePassed = 0
@@ -42,7 +55,7 @@ end)
 RegisterNetEvent('SN-Shops:Server:SafeHackDone', function(ShopID, CoordsID, removeitem)
     local src = source
     if RobbedSafes[CoordsID] == true then return end
-    if removeItem then 
+    if removeItem then
         RemoveItem(src, Config.register_loot.item_needed)
     end
     RobbedSafes[CoordsID] = true
@@ -71,7 +84,7 @@ RegisterNetEvent('SN-Shops:Server:Reward', function(type, id, removeitem)
         end
     elseif type == 'safe' then
         TriggerClientEvent('SN-Shops:Client:UpdateSafeDoor', -1, id, false)
-        if removeItem then 
+        if removeItem then
             RemoveItem(src, Config.safe_loot.item_needed)
         end
         local amount = math.random(Config.safe_loot.reward_amount[1], Config.safe_loot.reward_amount[2])

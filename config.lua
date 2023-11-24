@@ -44,6 +44,8 @@ Config.Dispatch = function(type, coords) -- type options safe or register
     end
 end
 
+Config.MinCops = 0
+
 Shops = {
      ---==========[24/7]==========--- NOT GABZ (IF USING GABZ 24/7 line: 83-126)
     {  -- /tp 29.2 -1344.72 29.5
